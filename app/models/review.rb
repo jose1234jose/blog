@@ -1,5 +1,5 @@
-class Post < ActiveRecord::Base
-	has_many :reviews
+class Review < ActiveRecord::Base
+	belongs_to :Post
 
 	before_create :initialize_like
 

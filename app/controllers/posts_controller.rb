@@ -4,8 +4,43 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
+    @q = params[:q]
+    if @q
+      pal=@q.to_s
+      @posts = Post.where("body LIKE '%#{pal}%'").order("created_at DESC")
+    else
+      @posts = Post.order("created_at DESC")
+    end
+  end
+
+  def principal
+    @posts = Post.order("created_at DESC")
+  end
+
+  def reporte
     @posts = Post.all
   end
+
+  def like
+    @post = Post.find(params[:id])
+    @post.like = @post.like + 1
+    if @post.save
+      redirect_to (:back)
+    else
+      render "show"
+    end
+  end
+
+  def dislike
+    @post = Post.find(params[:id])
+    @post.like = @post.like - 1
+    if @post.save
+      redirect_to (:back)
+    else
+      render "show"
+    end
+  end
+
 
   # GET /posts/1
   # GET /posts/1.json
@@ -69,6 +104,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title, :body)
+      params.require(:post).permit(:title, :body, :like)
     end
 end
